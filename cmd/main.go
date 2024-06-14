@@ -1,19 +1,25 @@
 package main
 
 import (
-	"go_final_project/tests"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 )
 
+const defPort = "7070"
+
 func main() {
+
+	// Инициализируем ENV
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	// Установка порта по умолчанию
-	port := strconv.Itoa(tests.Port)
-	// Проверка переменной окружения TODO_PORT
-	if envPort, ok := os.LookupEnv("TODO_PORT"); ok {
-		port = envPort
+	port := os.Getenv("TODO_PORT")
+
+	if port != "" {
+		port = defPort
 	}
 
 	// Установка директории с фронтенд файлами
@@ -27,4 +33,5 @@ func main() {
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
+
 }
