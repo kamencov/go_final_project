@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/joho/godotenv"
+	storage "go_final_project/database"
 	"log"
 	"net/http"
 	"os"
@@ -22,6 +23,14 @@ func main() {
 		port = defPort
 	}
 
+	// Запуск базы данных
+	dbCon, err := storage.NewDb()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer dbCon.Db.Close()
+
 	// Установка директории с фронтенд файлами
 	fs := http.FileServer(http.Dir("./web"))
 
@@ -29,7 +38,7 @@ func main() {
 	http.Handle("/", fs)
 
 	// Запуск сервера
-	log.Printf("Сервер запущен на http://localhost:%s", port)
+	log.Printf("Server started at http://localhost:%s", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
