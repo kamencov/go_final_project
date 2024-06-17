@@ -31,14 +31,14 @@ func NewDb() (*DbConnection, error) {
 	}
 	fmt.Println(file)
 
-	dbFile := filepath.Join(file, "scheduler.db")
+	dbFile := filepath.Join(file, os.Getenv("DB_NAME"))
 
 	_, err = os.Stat(dbFile)
 	var install bool
 	if err != nil {
 		install = true
 	}
-	db, err := sqlx.Open("sqlite3", dbFile)
+	db, err := sqlx.Open(os.Getenv("DB_DRIVER"), dbFile)
 	if err != nil {
 		log.Printf("DbConnection: can't open db: %s\n", err)
 	}
